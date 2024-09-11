@@ -1,66 +1,63 @@
-## Foundry
+### Airdrop Distribution Smart Contract
+This repository contains a Solidity-based Airdrop Distribution Smart Contract designed to efficiently and securely distribute tokens to multiple recipients. The contract is highly customizable, making it suitable for any token distribution event, including promotional token giveaways, liquidity mining rewards, or airdrop campaigns.
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## Features
+- Efficient Distribution: Distributes tokens to multiple addresses in a single transaction, reducing gas fees and complexity.
+ERC20 Compatible: Supports ERC20 tokens, ensuring compatibility with most tokens on Ethereum and Ethereum-compatible chains like Kaia and others.
+- Custom Distribution: Allows the owner to define the amount of tokens each recipient will receive.
+Ownership Control: Only the contract owner can initiate token distributions.
+- Batch Distribution: Distribute tokens in batches to save on gas fees.
+Security-First Design: Includes security features such as reentrancy protection and ownership controls to ensure safe execution.
 
-Foundry consists of:
+## Prerequisites
+Solidity: Version 0.8.x or higher
+Node.js and npm (to manage dependencies)
+Foundry (for deployment and testing)
+ERC20 Token Contract: You need a deployed ERC20 token contract to distribute tokens through this Airdrop smart contract.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Deployment
+Install Dependencies: Ensure that you have installed all required dependencies, including Hardhat or Foundry, by running:
 
-## Documentation
+```bash
+npm install
+```
+or
 
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```bash
+forge install
+Compile the Contract:
 ```
 
-### Test
-
-```shell
-$ forge test
+```bash
+npx hardhat compile
 ```
 
-### Format
+or
 
-```shell
-$ forge fmt
+```bash
+forge build
+Deploy the Contract:
 ```
 
-### Gas Snapshots
-
-```shell
-$ forge snapshot
+```bash
+forge script deploy --broadcast
 ```
 
-### Anvil
+Make sure to configure your network settings (e.g., Ethereum, Kaia chain) before running the deployment script.
 
-```shell
-$ anvil
+## Fund the Contract: Once deployed, fund the contract with the ERC20 tokens you plan to distribute.
+Example Usage
+Distribution Setup: Set up the contract with a list of recipient addresses and corresponding amounts.
+
+```solidity
+address memory recipients = [0xRecipient1];
+uint256 memory amounts = [1000 * 10**18];  // Amounts in token's smallest unit (wei for ETH tokens)
+claim(recipients, amounts);
 ```
 
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+## Security Considerations
+Ensure proper management of the contract owner.
+Use trusted sources for deployment and a secure wallet for ownership.
+Double-check recipient and amount arrays before distribution to avoid unintended transfers.
+License
+This project is licensed under the MIT License.
