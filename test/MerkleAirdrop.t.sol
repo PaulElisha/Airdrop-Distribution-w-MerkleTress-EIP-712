@@ -21,6 +21,7 @@ contract MerkleAirdropTest is ZkSyncChainChecker, Test {
         0xe5ebd1e1b5a5478a944ecab36a9a954ac3b6b8216875f6524caa7a1d87096576;
     bytes32[] public PROOF = [PROOF_ONE, PROOF_TWO];
     address USER;
+    address FEE_PAYER;
     uint256 USER_PRIVATE_KEY;
 
     function setUp() public {
@@ -35,14 +36,18 @@ contract MerkleAirdropTest is ZkSyncChainChecker, Test {
             bagelToken.transfer(address(merkleAirdrop), AMOUNT_TO_SEND);
         }
         (USER, USER_PRIVATE_KEY) = makeAddrAndKey("USER");
+        FEE_PAYER = makeAddr("FEE_PAYER");
     }
 
     function testClaimersCanClaim() public {
         uint256 startingBalance = bagelToken.balanceOf(USER);
         console.log("Starting Balance:", startingBalance);
+        bytes32 digest = merkleAirdrop.getMessageHash(USER, AMOUNT_TO_CLAIM);
 
-        vm.prank(USER);
-        merkleAirdrop.claim(USER, AMOUNT_TO_CLAIM, PROOF);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(USER_PRIVATE_KEY, digest);
+
+        vm.prank(FEE_PAYER);
+        merkleAirdrop.claim(USER, AMOUNT_TO_CLAIM, PROOF, v, r, s);
 
         uint256 endingBalance = bagelToken.balanceOf(USER);
         console.log("Ending Balance:", endingBalance);
