@@ -317,7 +317,7 @@ EIP-712 provides a standardized way to handle message signing. Developers can fo
 
 EIP-712 has been integrated in this Airdrop contract to facilitate structured data and meta transactions.
 
-See: [repository](https://github.com/PaulElisha/Kaia-Airdrop-Distribution)
+See: (![repository](https://github.com/PaulElisha/Kaia-Airdrop-Distribution))
 
 
 ### Airdrop Distribution Smart Contract
@@ -427,7 +427,8 @@ It uses the Merkle proof library to verify the validity of the proof.
 
 `**Tests:**`
 
-See: [test](air.png)
+See: 
+(![test screenshot](air.png))
 
 ## Conclusion
 
