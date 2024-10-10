@@ -425,6 +425,10 @@ Note: The addresses to whitelist to stored in the 'whitelist' variable under the
 
 It uses the Merkle proof library to verify the validity of the proof.
 
+`**Tests:**`
+
+See: [test](air.png)
+
 ## Conclusion
 
 EIP-712 is a valuable tool for Ethereum developers looking to enhance security and user experience in their dApps. By signing structured data, you reduce the risk of signature misuse and provide clarity to users about what they are signing. As you build and deploy your applications, consider integrating EIP-712 to ensure a safer and more user-friendly experience.

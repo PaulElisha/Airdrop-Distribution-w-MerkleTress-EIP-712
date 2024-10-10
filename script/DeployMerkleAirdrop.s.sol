@@ -6,36 +6,33 @@ import "../src/BagelToken.sol";
 import "forge-std/Script.sol";
 import "@openzeppelin/token/ERC20/IERC20.sol";
 import "forge-std/console2.sol";
+import "../script/DeployBagelToken.s.sol";
 
 contract DeployMerkleAirdrop is Script {
+    DeployBagelToken deployBagelToken;
     MerkleAirdrop merkleAirdrop;
     BagelToken bagelToken;
 
     bytes32 public constant ROOT =
-        0x057d6d8597d3d22719e6cdb92ab6205bee3339e7df399b5622af37f5b76513b7;
-    uint256 public AMOUNT_TO_CLAIM = 25 * 1e18;
+        0x7cdb6c21ef22a6cb5726d348e677f3e10032127425d425c5028965a30a71556e;
+    uint256 public AMOUNT_TO_CLAIM = 50 * 1e18;
     uint256 public AMOUNT_TO_MINT = AMOUNT_TO_CLAIM * 4;
-    uint256 public AMOUNT_TO_SEND = AMOUNT_TO_MINT;
+    uint256 public AMOUNT_TO_SEND = 25 * 1e18;
 
-    function InteractMerkleAirdrop() public {
+    function deployMerkleAirdrop() public returns (MerkleAirdrop, BagelToken) {
+        deployBagelToken = new DeployBagelToken();
+        bagelToken = deployBagelToken.run();
         vm.startPrank(bagelToken.owner());
-        // deployBagelToken = new DeployBagelToken();
-        // bagelToken = deployBagelToken.run();
-        // MerkleAirdrop merkleAirdrop = new MerkleAirdrop(
-        //     ROOT,
-        //     address(bagelToken)
-        // );
+        merkleAirdrop = new MerkleAirdrop(ROOT, address(bagelToken));
 
-        bagelToken = BagelToken(0x16abE11dC7b33cE03D481c2A20661E70aE2d5c4f);
-        merkleAirdrop = MerkleAirdrop(
-            0x090F4dBbE93DE617529Bf189dB611b488bb18bab
-        );
-        bagelToken.mint(address(merkleAirdrop), AMOUNT_TO_MINT);
-        // bagelToken.transfer(address(merkleAirdrop), AMOUNT_TO_SEND);
+        bagelToken.mint(bagelToken.owner(), AMOUNT_TO_MINT);
+        bagelToken.transfer(address(merkleAirdrop), AMOUNT_TO_SEND);
         vm.stopPrank();
+
+        return (merkleAirdrop, bagelToken);
     }
 
-    function run() public {
-        return InteractMerkleAirdrop();
+    function run() public returns (MerkleAirdrop, BagelToken) {
+        return deployMerkleAirdrop();
     }
 }
