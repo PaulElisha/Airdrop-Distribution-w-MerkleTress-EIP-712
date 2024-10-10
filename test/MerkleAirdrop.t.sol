@@ -11,8 +11,8 @@ contract MerkleAirdropTest is ZkSyncChainChecker, Test {
     MerkleAirdrop public merkleAirdrop;
     BagelToken public bagelToken;
     bytes32 public constant ROOT =
-        0x7cdb6c21ef22a6cb5726d348e677f3e10032127425d425c5028965a30a71556e;
-    uint256 public AMOUNT_TO_CLAIM = 25 * 1e18;
+        0x057d6d8597d3d22719e6cdb92ab6205bee3339e7df399b5622af37f5b76513b7;
+    uint256 public AMOUNT_TO_CLAIM = 100 * 1e18;
     uint256 public AMOUNT_TO_MINT = AMOUNT_TO_CLAIM * 4;
     uint256 public AMOUNT_TO_SEND = AMOUNT_TO_MINT;
     bytes32 public PROOF_ONE =
@@ -20,23 +20,20 @@ contract MerkleAirdropTest is ZkSyncChainChecker, Test {
     bytes32 public PROOF_TWO =
         0xe5ebd1e1b5a5478a944ecab36a9a954ac3b6b8216875f6524caa7a1d87096576;
     bytes32[] public PROOF = [PROOF_ONE, PROOF_TWO];
-    address USER;
+    address private constant USER = 0x1bAB6c36d216F27730519DFa284A4587B26182CB;
     address FEE_PAYER;
-    uint256 USER_PRIVATE_KEY;
+    uint256 USER_PRIVATE_KEY = vm.envUint("PRIVATE_KEY");
 
     function setUp() public {
-        if (!isZkSyncChain()) {
-            DeployMerkleAirdrop deployMerkleAirdrop = new DeployMerkleAirdrop();
-            (bagelToken, merkleAirdrop) = deployMerkleAirdrop
-                .deployMerkleAirdrop();
-        } else {
-            bagelToken = new BagelToken();
-            merkleAirdrop = new MerkleAirdrop(ROOT, bagelToken);
-            bagelToken.mint(bagelToken.owner(), AMOUNT_TO_MINT);
-            bagelToken.transfer(address(merkleAirdrop), AMOUNT_TO_SEND);
-        }
-        (USER, USER_PRIVATE_KEY) = makeAddrAndKey("USER");
+        bagelToken = BagelToken(0x16abE11dC7b33cE03D481c2A20661E70aE2d5c4f);
+        merkleAirdrop = MerkleAirdrop(
+            0x090F4dBbE93DE617529Bf189dB611b488bb18bab
+        );
+        vm.startPrank(bagelToken.owner());
         FEE_PAYER = makeAddr("FEE_PAYER");
+        bagelToken.transfer(FEE_PAYER, 5e18);
+        bagelToken.mint(address(merkleAirdrop), AMOUNT_TO_MINT);
+        vm.stopPrank();
     }
 
     function testClaimersCanClaim() public {

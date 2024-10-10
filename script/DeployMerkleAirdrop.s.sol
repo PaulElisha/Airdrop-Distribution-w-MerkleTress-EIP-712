@@ -5,22 +5,37 @@ import "../src/MerkleAirdrop.sol";
 import "../src/BagelToken.sol";
 import "forge-std/Script.sol";
 import "@openzeppelin/token/ERC20/IERC20.sol";
+import "forge-std/console2.sol";
 
 contract DeployMerkleAirdrop is Script {
+    MerkleAirdrop merkleAirdrop;
+    BagelToken bagelToken;
+
     bytes32 public constant ROOT =
-        0x7cdb6c21ef22a6cb5726d348e677f3e10032127425d425c5028965a30a71556e;
+        0x057d6d8597d3d22719e6cdb92ab6205bee3339e7df399b5622af37f5b76513b7;
     uint256 public AMOUNT_TO_CLAIM = 25 * 1e18;
     uint256 public AMOUNT_TO_MINT = AMOUNT_TO_CLAIM * 4;
     uint256 public AMOUNT_TO_SEND = AMOUNT_TO_MINT;
 
-    function deployMerkleAirdrop() public returns (BagelToken, MerkleAirdrop) {
-        vm.startBroadcast();
-        BagelToken bagelToken = new BagelToken();
-        MerkleAirdrop merkleAirdrop = new MerkleAirdrop(ROOT, bagelToken);
-        bagelToken.mint(bagelToken.owner(), AMOUNT_TO_MINT);
-        bagelToken.transfer(address(merkleAirdrop), AMOUNT_TO_SEND);
-        vm.stopBroadcast();
+    function InteractMerkleAirdrop() public {
+        vm.startPrank(bagelToken.owner());
+        // deployBagelToken = new DeployBagelToken();
+        // bagelToken = deployBagelToken.run();
+        // MerkleAirdrop merkleAirdrop = new MerkleAirdrop(
+        //     ROOT,
+        //     address(bagelToken)
+        // );
 
-        return (bagelToken, merkleAirdrop);
+        bagelToken = BagelToken(0x16abE11dC7b33cE03D481c2A20661E70aE2d5c4f);
+        merkleAirdrop = MerkleAirdrop(
+            0x090F4dBbE93DE617529Bf189dB611b488bb18bab
+        );
+        bagelToken.mint(address(merkleAirdrop), AMOUNT_TO_MINT);
+        // bagelToken.transfer(address(merkleAirdrop), AMOUNT_TO_SEND);
+        vm.stopPrank();
+    }
+
+    function run() public {
+        return InteractMerkleAirdrop();
     }
 }

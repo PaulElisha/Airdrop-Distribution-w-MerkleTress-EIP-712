@@ -17,7 +17,7 @@ contract MerkleAirdrop is EIP712 {
     event Claimed(address claimer, uint256 amount);
 
     address[] claimers;
-    bytes32 private immutable i_merkletRoot;
+    bytes32 private immutable i_merkleRoot;
     IERC20 private immutable i_token;
     mapping(address claimer => bool) private s_hasClaimed;
 
@@ -29,9 +29,12 @@ contract MerkleAirdrop is EIP712 {
     bytes32 private constant MESSAGE_TYPEHASH =
         keccak256("AirdropClaim(address account, uint256 amount)");
 
-    constructor(bytes32 merkleRoot, IERC20 token) EIP712("MerkleAirdrop", "1") {
-        i_merkletRoot = merkleRoot;
-        i_token = token;
+    constructor(
+        bytes32 merkleRoot,
+        address token
+    ) EIP712("MerkleAirdrop", "1") {
+        i_merkleRoot = merkleRoot;
+        i_token = IERC20(token);
     }
 
     function claim(
@@ -61,7 +64,7 @@ contract MerkleAirdrop is EIP712 {
         bytes32 leaf = keccak256(
             bytes.concat(keccak256(abi.encode(claimer, amount))) // hash twice to avoid collision
         );
-        if (!MerkleProof.verify(merkleProof, i_merkletRoot, leaf)) {
+        if (!MerkleProof.verify(merkleProof, i_merkleRoot, leaf)) {
             revert MerkleAirdrop__InvalidProof();
         }
         s_hasClaimed[claimer] = true;
@@ -90,6 +93,9 @@ contract MerkleAirdrop is EIP712 {
                 )
             );
 
+        // In most cases, the struct would be passed in as a parameter,
+        // so the comment below would work for that to ensure the struct os properly referenced.
+
         // return
         //     _hashTypedDataV4(
         //         keccak256(
@@ -114,7 +120,7 @@ contract MerkleAirdrop is EIP712 {
     }
 
     function getMerkleRoot() public view returns (bytes32) {
-        return i_merkletRoot;
+        return i_merkleRoot;
     }
 
     function getToken() public view returns (IERC20) {
