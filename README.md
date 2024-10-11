@@ -96,7 +96,7 @@ To define the structured data, it is imperative to declare using understandable 
 
 `**Hash Struct**`
 
-The hash struct involves the typeHash, a convention used when the type of a struct is encoded or hashed and the hash of the message.
+The hash struct involves the typeHash, a convention used when the type of a struct is encoded or hashed and the hash of the message. This is what makes the message readable before signing.
 
 ```solidity
     keccak256(Mail(address from, address to, string contents));
@@ -144,7 +144,7 @@ bytes32 public immutable i_domain_separator = keccak256(
 );
 ```
 
-This means that contracts can know whether the signature was created specifically for themselves or not.
+This means that contracts can know whether the signature was created specifically for themselves or not. That is, the domain separator makes the application context unique, it's like how a chain-id differentiates between chains.
 
 Before the EIP712 standard, we had the EIP191 standard used to facilitate already made signatures or sponsored transactions - that is, you can sign a message and approve someone to send the transaction using their gas fees.
 
@@ -165,7 +165,7 @@ Additionally, 0x19 has been chosen because since ethereum/go-ethereum#2940 , the
 "\x19Ethereum Signed Message:\n" + len(message).
 
 -  Version 0x01
-The version 0x01 is for structured data as defined in EIP-712
+The version 0x01 is for typed structured data as defined in EIP-712.
 
 - Domain Separator: Version-specific data.
 
